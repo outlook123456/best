@@ -1,0 +1,31 @@
+<html>
+<head>
+    <title>PAY</title>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0"/>
+</head>
+<body onload="onScriptLoad();">
+    <button id="rzp-button1">Pay</button>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        function onScriptLoad(){
+            var options = {
+                "key": "YOUR_KEY_ID",
+                "amount": "50000",
+                "currency": "INR",
+                "name": "Pay",
+                "image": "https://s3.amazonaws.com/rzp-mobile/images/rzp.png",
+                "order_id": "order_9A33XWu170gUtm",
+                "callback_url": "https://payment.bestindai.com/paypage/upi2/success.html",
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9999999999"
+                },
+                "theme": {        "color": "#3399cc"    }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+    </script>
+</body>
+</html>

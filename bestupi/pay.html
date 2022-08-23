@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/pay.css?v=1.3"/>
+		<title>Pay</title>
+	</head>
+	<body>
+		<div class="top"></div>
+		<div class="main">
+			<div class="amount">₹ <span>--</span></div>
+			<div class="pay-desc">The amount you need to pay</div>
+			<div class="pay-select">Select an option to pay(UPI)</div>
+			<div class="pay-type">
+				<ul>
+					<li data="paytmmp"><img src="img/paytm.png" /><span>PayTm</span><div class="circle"></div></li>
+					<li data="phonepe"><img src="img/phonepe.png" /><span>Phonepe</span><div class="circle"></div></li>
+					<li data="gpay"><img src="img/gpay.png" /><span>GooglePay</span><div class="circle"></div></li>
+					<li data="upi"><img src="img/other.png" /><span>Other UPI</span><div class="circle"></div></li>
+				</ul>
+			</div>
+			<div class="pay-button">Pay<span>₹ --</span></div>
+		</div>
+		
+		<div class="shawdow">
+			<div class="msg"></div>
+		</div>
+		
+		<div class="wait">
+			<div class="content">
+				<div class="time">00 : 30</div>
+				<div class="msg">Waitting for order status</div>
+			</div>
+		</div>
+
+		<div class="success">
+			<div class="content">
+				<div class="time"><img src="img/success.gif" width="30%" ></div>
+				<div class="msg">Order Paid</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="js/rem.js?v=1.1"></script>
+		<script type="text/javascript" src="js/jquery.min.js.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
+		<script>
+			var amount, link, orderNo;
+			$(function() {
+				orderNo = window.location.search.substring(1);
+				if (!orderNo) {
+					showError("Order not exist");
+					return;
+				}
+				orderNo = orderNo.replace("platformTradeNo=", "");
+				queryOrder(true);
+				
+				var payType = localStorage.getItem("platform_pay_type");
+				if (payType) {
+					$('.pay-type li[data="' + payType + '"]').addClass('check');
+				} else {
+					$('.pay-type li:first').addClass('check');
+				}
+				$('.pay-type li').click(function() {
+					$('.pay-type .check').removeClass('check');
+					$(this).addClass('check');
+				});
+				
+				$('.pay-button').click(function() {
+					if (!amount || !link) {
+						return;
+					}
+					payType = $('.pay-type .check').attr('data');
+					localStorage.setItem("platform_pay_type", payType);
+					var u = navigator.userAgent;
+					var isIos = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+					location.href = payType + "://" + (isIos || payType == "gpay" ? "upi/" : "") + link;
+					wait();
+				});
+			});
+
+			
+			function showError(msg) {
+				$('.shawdow .msg').html(msg);
+				$('.shawdow').show();
+			}
+			
+			var timeInterval;
+			function wait() {
+				setTimeout(function() {
+					$(".wait").show();
+					var waitTime = 29;
+					timeInterval = setInterval(function() {
+						if (waitTime >= 0) {
+							$(".wait .time").html('00 : ' + (waitTime < 10 ? '0' + waitTime : waitTime));
+							if (waitTime%5 == 0) {
+								queryOrder(false);
+							}
+							waitTime--;
+						} else {
+							clearInterval(timeInterval);
+							$('.wait').hide();
+						}
+					}, 1000);
+				}, 1200);
+			}
+
+
+			function queryOrder(first) {
+				$.ajax({
+					url: REQ_URL + '/tradeplatform/payChannel/handlePaymentUpiOrder?platformTradeNo=' + orderNo,
+					type: "GET",
+					success: function(data) {
+						if (data.code == 0) {
+							if (first) {
+								amount = data.amount;
+								$('.amount span').text(amount);
+								$('.pay-button span').text("₹ " + amount);
+							}
+							if (data.status == '01') {
+								if (first) {
+									$.ajax({
+										url: 'https://api.razorpay.com/v1/payments/create/ajax?'+'contact=%2B91'+data.phone +
+												'&email=' + data.email+
+												'&method=upi&_[flow]=intent&_[upiqr]=1' +
+												'&amount=' +(amount*100)+
+												'&currency=INR' +
+												'&order_id=' + data.channelOrderNo+
+												'&key_id=' +data.paylink+
+												'&_[library]=checkoutjs&_[platform]=browser&_[referer]='+window.location.href+'&_[request_index]=0',
+										type: "POST",
+										success: function(data) {
+											link = data.data.intent_url.replace('upi://','');
+											location.href=data.data.intent_url
+										},
+										error: function(e) {
+											showError("network connection error");
+										}
+									});
+
+								}
+							} else if (data.status == '02') {
+								// showError("Paid");
+								$('.success').show();
+								// window.location.href = data.data.message;
+							} else {
+								showError(data.msg);
+							}
+						} else {
+							showError(data.msg);
+						}
+					},
+					error: function(e) {
+						showError("network connection error");
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

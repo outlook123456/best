@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/pay.css?v=1.3"/>
+		<title>Pay</title>
+	</head>
+	<body>
+		<div class="top"></div>
+		<div class="main">
+			<div class="amount">₹ <span>100</span></div>
+			<div class="pay-desc">The amount you need to pay</div>
+			<div class="pay-select">Select an option to pay(UPI)</div>
+			<div class="pay-type">
+				<ul>
+					<li data="paytmmp"><img src="img/paytm.png" /><span>PayTm</span><div class="circle"></div></li>
+					<li data="phonepe"><img src="img/phonepe.png" /><span>Phonepe</span><div class="circle"></div></li>
+					<li data="gpay"><img src="img/gpay.png" /><span>GooglePay</span><div class="circle"></div></li>
+					<li data="bhim"><img src="img/bhim.png" /><span>BHIM</span><div class="circle"></div></li>
+					<li data="upi"><img src="img/other.png" /><span>Other UPI</span><div class="circle"></div></li>
+				</ul>
+			</div>
+			<div class="pay-button">Pay<span>₹ 100</span></div>
+		</div>
+		
+		<div class="shawdow">
+			<div class="msg"></div>
+		</div>
+		
+		<div class="wait">
+			<div class="content">
+				<div class="time">00 : 30</div>
+				<div class="msg">Waitting for order status</div>
+				<div><a style="color: red;line-height: 0.4rem;margin-top: 0.54rem;" onclick="chooseOther()" >Choose other payment options</a></div>
+			</div>
+		</div>
+
+		<div class="success">
+			<div class="content">
+				<div class="time"><img src="img/success.gif" width="30%" ></div>
+				<div class="msg">Order Paid</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="js/rem.js?v=1.1"></script>
+		<script type="text/javascript" src="js/jquery.min.js.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
+		<script>
+			var link='pay?pa=rvacsolutions@yesbank&pn=RVAC%20SOLUTIONS%20PRIVATE%20LIMITED&tr=20220727093434605879477055393771&am=500&cu=INR#Intent;scheme=upi;package=net.one97.paytm;end';
+			$(function() {
+				var payType = localStorage.getItem("platform_pay_type");
+				if (payType) {
+					$('.pay-type li[data="' + payType + '"]').addClass('check');
+				} else {
+					$('.pay-type li:first').addClass('check');
+				}
+				$('.pay-type li').click(function() {
+					$('.pay-type .check').removeClass('check');
+					$(this).addClass('check');
+				});
+				
+				$('.pay-button').click(function() {
+					payType = $('.pay-type .check').attr('data');
+					localStorage.setItem("platform_pay_type", payType);
+					var u = navigator.userAgent;
+					var isIos = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+					location.href = payType + "://" + (isIos || payType == "gpay" ? "upi/" : "") + link;
+					wait();
+				});
+			});
+
+			var timeInterval;
+			function wait() {
+				setTimeout(function() {
+					$(".wait").show();
+					var waitTime = 29;
+					timeInterval = setInterval(function() {
+						if (waitTime >= 0) {
+							$(".wait .time").html('00 : ' + (waitTime < 10 ? '0' + waitTime : waitTime));
+							// if (waitTime%5 == 0) {
+							//
+							// }
+							waitTime--;
+						} else {
+							clearInterval(timeInterval);
+							$('.wait').hide();
+						}
+					}, 1000);
+				}, 1200);
+			}
+
+			function chooseOther() {
+				clearInterval(timeInterval);
+				$('.wait').hide();
+			}
+		</script>
+	</body>
+</html>

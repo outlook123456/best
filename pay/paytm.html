@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/pay.css?v=1.3"/>
+		<title>Pay</title>
+	</head>
+	<body>
+		<div class="top"></div>
+		<div class="main">
+			<div class="amount">₹ <span>--</span></div>
+			<div class="pay-desc">The amount you need to pay</div>
+			<div class="pay-select">Choose a payment option:</div>
+			<div class="pay-type paymode">
+				<div class="table-column">
+					<div class="table-row" data="phonepe"><div><img src="img/phonepe-icon.ff616d58.png" /><div>PhonePe</div></div></div>
+					<div class="table-row" data="amazon"><div><img src="img/amazon.png" /></div><div>Amazon</div></div>
+					<div class="table-row" data="freecharge"><div><img src="img/freecharge.png" /></div><div>Freecharge</div></div>
+				</div>
+				<div class="table-column">
+					<div class="table-row" data="gpay"><div><img src="img/gpay-icon.eca8cecb.png" /></div><div>G Pay</div></div>
+					<div class="table-row" data="mobikwik"><div><img src="img/mobikwik.png" /></div><div>MobiKwik</div></div>
+					<div class="table-row" data="bhim"><div><img src="img/bhim-icon.f99faf63.png" /></div><div>BHIM</div></div>
+				</div>
+				<div class="table-column">
+					<div class="table-row" data="paytmmp"><div><img src="img/paytm-icon.60ece9c3.png" /></div><div>Paytm</div></div>
+					<div class="table-row" data="bharatpe"><div><img src="img/bharaPe.png" /></div><div>BharatPe</div></div>
+					<div class="table-row" data="hdfcbank"><div><img src="img/hdfc-icon.8807fb24.png" /></div><div>HDFC Bank</div></div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="footer">
+			<div class="f_title">Payment prompt：</div>
+			<p>Please select the payment method you need and make sure your phone has the corresponding wallet software installed.</p>
+		</div>
+
+
+		<script type="text/javascript" src="js/rem.js?v=1.1"></script>
+		<script type="text/javascript" src="js/jquery.min.js.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
+		<script src="js/crypto-js.js"></script>
+		<script>
+			var amount, link, orderNo;
+			$(function() {
+				const desData = window.location.search.substring(1);
+				const DES_KEY = 'z8e1ccc7f4c7b717';
+				const deco = decodeURIComponent(desData);
+				const cryptoInfo = ClearBr(deco);
+				let dataInfo = decryptByDES(cryptoInfo,DES_KEY);
+				function decryptByDES(message, key) {
+					var keyHex = CryptoJS.enc.Utf8.parse(key);
+					var decrypted = CryptoJS.DES.decrypt(message, keyHex, {
+						mode: CryptoJS.mode.ECB,
+						padding: CryptoJS.pad.Pkcs7
+					});
+					return decrypted.toString(CryptoJS.enc.Utf8);
+				}
+				dataInfo = JSON.parse(dataInfo);
+				orderNo = dataInfo.id;
+				amount = dataInfo.amount;
+				link = dataInfo.deepLink;
+				$('.amount span').text(amount);
+				if (!orderNo) {
+					window.location.href = 'fail.html'
+					return;
+				}
+				queryOrder(true);
+				$('.table-row').click(function (e) {
+					if (!amount || !link) {
+						return;
+					}
+					let payType = "";
+					try{
+						payType = e.currentTarget.getAttribute('data');
+					}catch (e) {
+
+					}
+					if(payType == ""){
+						payType = "upi"
+					}
+					queryOrder(false);
+					let dep = link.split("?")[1];
+					if("phonepe" == payType){
+						location.href = "phonepe://pay?"+dep;
+					}else if("bharatpe" == payType){
+						location.href = "bharatpe://open?"+dep;
+					}else if("amazon" == payType){
+						location.href = "com.amazon.mobile.shopping://?"+dep;
+					}else if("freecharge" == payType){
+						location.href = "freecharge://?"+dep;
+					}else if("gpay" == payType){
+						location.href = "gpay://upi/pay?"+dep;
+					}else if("mobikwik" == payType){
+						location.href = "mobikwik://open?"+dep;
+					}else if("bhim" == payType){
+						location.href = "upi://mandate?"+dep;
+					}else if("paytmmp" == payType){
+						location.href = "paytmmp://pay?"+dep;
+					}else if("hdfcbank" == payType){
+						location.href = "upi://hdfcbank?"+dep;
+					}else {
+						location.href = "upi://upi/pay?"+dep;
+					}
+				});
+			});
+
+			function ClearBr(key) {
+				key = key.replace(/<\/?.+?>/g,"");
+				key = key.replace(/[\r\n]/g, "");
+				return key;
+			}
+			function queryOrder(first) {
+				$.ajax({
+					url: REQ_URL + '/tradeplatform/payChannel/handlePaymentUpiOrder?platformTradeNo=' + orderNo,
+					type: "GET",
+					success: function(data) {
+						if (data.code == 0) {
+							if (first) {
+								amount = data.amount;
+								$('.amount span').text(amount);
+							}
+							if (data.status == '01') {
+								if (first) {
+									link = data.paylink;
+								}
+							} else if (data.status == '02') {
+								window.location.href = 'success.html'
+							}else if (data.status == '09') {
+								window.location.href = 'fail.html'
+							}else {
+								window.location.href = 'fail.html'
+							}
+						} else {
+							window.location.href = 'fail.html'
+						}
+					},
+					error: function(e) {
+						window.location.href = 'fail.html?failMsg=network connection error'
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

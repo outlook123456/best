@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/pay.css?v=1.3"/>
+		<title>Pay</title>
+	</head>
+	<body>
+		<div class="top"></div>
+		<div class="main">
+			<div class="amount">₹ <span>--</span></div>
+			<div class="pay-desc">The amount you need to pay</div>
+			<div class="pay-select">Select an option to pay(UPI)</div>
+			<div class="pay-type">
+				<ul>
+					<li data="paytmmp"><img src="img/paytm.png" /><span>PayTm</span><div class="circle"></div></li>
+					<li data="gpay"><img src="img/gpay.png" /><span>GooglePay</span><div class="circle"></div></li>
+					<li data="bhim"><img src="img/bhim.png" /><span>BHIM</span><div class="circle"></div></li>
+					<li data="phonepe"><img src="img/phonepe.png" /><span>Phonepe</span><div class="circle"></div></li>
+					<li data="upi"><img src="img/other.png" /><span>Other UPI</span><div class="circle"></div></li>
+				</ul>
+			</div>
+			<div class="pay-button">Pay<span>₹ --</span></div>
+		</div>
+		
+		<div class="shawdow">
+			<div class="msg"></div>
+		</div>
+		
+		<div class="wait">
+			<div class="content">
+				<div class="time">00 : 30</div>
+				<div class="msg">Waitting for order status</div>
+				<div><a onclick="otherPay()" style="color: red;line-height: 0.4rem;margin-top: 0.54rem;">Choose other payment options</a></div>
+			</div>
+		</div>
+
+		<div class="success">
+			<div class="content">
+				<div class="time"><img src="img/success.gif" width="30%" ></div>
+				<div class="msg">Order Paid</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="js/rem.js?v=1.1"></script>
+		<script type="text/javascript" src="js/jquery.min.js.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
+		<script>
+			var amount, link, orderNo;
+			$(function() {
+				orderNo = window.location.search.substring(1);
+				if (!orderNo) {
+					showError("Order not exist");
+					return;
+				}
+				orderNo = orderNo.replace("platformTradeNo=", "");
+				queryOrder(true);
+				
+				var payType = localStorage.getItem("platform_pay_type");
+				if (payType) {
+					$('.pay-type li[data="' + payType + '"]').addClass('check');
+				} else {
+					$('.pay-type li:first').addClass('check');
+				}
+				$('.pay-type li').click(function() {
+					$('.pay-type .check').removeClass('check');
+					$(this).addClass('check');
+				});
+				
+				$('.pay-button').click(function() {
+					if (!amount || !link) {
+						return;
+					}
+					payType = $('.pay-type .check').attr('data');
+					localStorage.setItem("platform_pay_type", payType);
+					var u = navigator.userAgent;
+					var isIos = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+					var end = "#Intent;scheme=upi;package=in.org.npci.upiapp;end";
+					payType = "upi";
+					if("paytmmp" == payType){
+						end = "#Intent;scheme=upi;package=net.one97.paytm;end";
+					}else if("gpay" == payType){
+						end = "&mode=00&purpose=00#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end";
+					}else if("phonepe" == payType){
+						end = "&mode=00&purpose=00#Intent;scheme=upi;package=com.phonepe.app;end";
+					}
+					location.href = payType + "://" + (isIos || payType == "gpay" ? "upi/" : "") + link + end;
+					wait();
+					// var herf = payType + "://" + (isIos || payType == "gpay" ? "upi/" : "") + link;
+					// appStart(herf,function () {},function () {
+					// 	herf = "upi://" + (isIos || "upi" == "gpay" ? "upi/" : "") + link;
+					// 	appStart(herf,function () {},function () {})
+					// });
+					// wait();
+				});
+			});
+
+			// function appStart(url, onSuccess, onFail) {
+			// 	var last = Date.now();
+			// 	var ifr = document.createElement('IFRAME');
+			// 	ifr.src = url;
+			// 	ifr.style.position = 'absolute';
+			// 	ifr.style.left = '-1000px';
+			// 	ifr.style.top = '-1000px';
+			// 	ifr.style.width = '1px';
+			// 	ifr.style.height = '1px';
+			// 	ifr.style.webkitTransition = 'all 1s';
+			// 	document.body.appendChild(ifr);
+			// 	setTimeout(function(){
+			// 		ifr.addEventListener('webkitTransitionEnd', function(){
+			// 			document.body.removeChild(ifr);
+			// 			if(Date.now() - last < 6000){
+			// 				if(typeof onFail === 'function'){
+			// 					onFail();
+			// 				}
+			// 			} else if(typeof onSuccess === 'function') {
+			// 				onSuccess();
+			// 			}
+			// 		}, false);
+			// 		ifr.style.left = '-10px';
+			// 	}, 0);
+			// }
+
+			
+			function showError(msg) {
+				$('.shawdow .msg').html(msg);
+				$('.shawdow').show();
+			}
+			
+			var timeInterval;
+			function wait() {
+				setTimeout(function() {
+					$(".wait").show();
+					var waitTime = 29;
+					timeInterval = setInterval(function() {
+						if (waitTime >= 0) {
+							$(".wait .time").html('00 : ' + (waitTime < 10 ? '0' + waitTime : waitTime));
+							if (waitTime%5 == 0) {
+								queryOrder(false);
+							}
+							waitTime--;
+						} else {
+							clearInterval(timeInterval);
+							$('.wait').hide();
+						}
+					}, 1000);
+				}, 1200);
+			}
+
+			function otherPay() {
+				clearInterval(timeInterval);
+				$('.wait').hide();
+			}
+
+			function queryOrder(first) {
+				$.ajax({
+					url: REQ_URL + '/tradeplatform/payChannel/handlePaymentUpiOrder?platformTradeNo=' + orderNo,
+					type: "GET",
+					success: function(data) {
+
+						if (data.code == 0) {
+							if (first) {
+								amount = data.amount;
+								$('.amount span').text(amount);
+								$('.pay-button span').text("₹ " + amount);
+							}
+							if (data.status == '01') {
+								if (first) {
+									link = data.paylink;
+								}
+							} else if (data.status == '02') {
+								// showError("Paid");
+								$('.success').show();
+								// window.location.href = data.data.message;
+							}else if (data.status == '09') {
+								showError("Faild");
+								// window.location.href = data.data.message;
+							}else {
+								showError(data.msg);
+							}
+						} else {
+							showError(data.msg);
+						}
+					},
+					error: function(e) {
+						showError("network connection error");
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

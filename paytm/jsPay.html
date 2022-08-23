@@ -1,0 +1,44 @@
+<html>
+<head>
+    <title>PAY</title>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0"/>
+</head>
+<script type="application/javascript" crossorigin="anonymous" src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/jngTbn40661632178666.js"></script>
+<body onload="onScriptLoad();">
+<div id="card"></div>
+<script>
+    function onScriptLoad(){
+        var config = {
+            "root": "#card",
+            "flow": "DEFAULT",
+            "data": {
+                "orderId": "", /* update order id */
+                "token": "", /* update token value */
+                "tokenType": "TXN_TOKEN",
+                "amount": "" /* update amount */
+            },
+            "payMode":{
+                "order": ["PDC",'UPI','PPBL','BALANCE','NB'],
+                "filter": {
+                    "exclude": ['CARD','EMI']
+                }
+            },
+            "handler": {
+                "notifyMerchant": function(eventName,data){
+                }
+            }
+        };
+
+        if(window.Paytm && window.Paytm.CheckoutJS){
+            window.Paytm.CheckoutJS.onLoad(function excecuteAfterCompleteLoad() {
+                window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                    window.Paytm.CheckoutJS.invoke();
+                }).catch(function onError(error){
+                    console.log("error => ",error);
+                });
+            });
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,1095 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="screen-orientation" content="portrait">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Document</title>
+    <link rel="stylesheet" href="paystatic/css/index.css">
+
+    <link rel="stylesheet" href="paystatic/css/index.css">
+    <link rel="stylesheet" href="paystatic/css/element-ui/index.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            -moz-text-size-adjust:none;
+            -webkit-text-size-adjust: none;
+        }
+
+
+        .payOptions {
+            color: #1E1E1E;
+            padding: 0px 10px;
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .payOptions.active {
+            box-sizing: border-box;
+            width: 100%;
+            height: 40px;
+            background: #FFFFFF;
+            box-shadow: 0px 4px 10px 0px rgba(0, 185, 245, 0.2);
+            border-radius: 8px;
+            border: 1px solid #00B9F5;
+            color: #00B9F5;
+            /* border-image: linear-gradient(270deg, rgba(0, 221, 251, 1), rgba(0, 185, 245, 1)) 1 1; */
+        }
+        .payOptions img {
+            width: 24px;
+        }
+        .payOptionsImg {
+            width: 60px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .payOptionsImg img {
+            width: 40px;
+        }
+        .paymentList {
+            overflow: auto;
+            position: fixed;
+            top: 100px;
+            width: 90%;
+            height: 100%;
+            background: #F8F8F8;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .payOptions .paymentRadio {
+            width: 14px;
+            height: 14px;
+            background-image: url('paystatic/images/unchecked.png');
+            background-size: cover;
+        }
+        .payOptions.active .paymentRadio {
+            width: 14px;
+            height: 14px;
+            background-image: url('paystatic/images/checked.png');
+            background-size: cover;
+        }
+        .el-collapse-item__header,.el-collapse-item__wrap {
+            background: #F8F8F8;
+        }
+        .payBtn {
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(270deg, #00B9F5 0%, #0088F5 100%);
+            box-shadow: 0px 4px 10px 0px rgba(0, 185, 245, 0.2);
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #FFFFFF;
+            border: none;
+            line-height: 16px;
+            outline: none;
+        }
+        .album {
+            margin-top: 20px;
+        }
+        .upiPayLogoBox {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+        .payConfig_head_icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .el-collapse {
+            box-sizing: border-box;
+        }
+        .upi_icon {
+            background-image: url('paystatic/images/upi.png');
+            background-size: cover;
+        }
+        .manal_icon {
+            background-image: url('paystatic/images/manual.png');
+            background-size: cover;
+        }
+        .qr_icon {
+            background-image: url('paystatic/images/scan.png');
+            background-size: cover;
+        }
+
+        #output {
+            width: 100px;
+            height: 100px;
+        }
+        .newImg {
+            width: 100px;
+            height: 100px;
+        }
+
+
+        .box{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid lightblue;
+            background: lightgoldenrodyellow;
+            margin-bottom: 20px;
+        }
+
+        .qrCode_config {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .qrCode_box {
+            padding: 10px;
+            box-sizing: border-box;
+            width: 260px;
+            height: 350px;
+            background: #F0F0F0;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #787878;
+        }
+        .qrCode__des {
+            margin-left: 10px;
+        }
+
+        #qrCode {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 240px;
+            height: 240px;
+        }
+
+        .qrCode {
+            /* margin-left: 20px; */
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 88px;
+            height: 88px;
+            position: absolute;
+            opacity: 0;
+            /* top: -40px;
+            left: 0px; */
+        }
+
+        .newImg {
+            width: 100px;
+            height: 100px;
+        }
+
+        .box{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid lightblue;
+            background: lightgoldenrodyellow;
+            margin-bottom: 20px;
+        }
+
+        #downloadArea {
+            color: red;
+            font-size: 24px;
+        }
+        .savemap {
+            /* width: 320px;
+            height: 560px; */
+            width: 640px;
+            height: 1120px;
+            background-image: url('paystatic/images/saveMap.jpg');
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            /* opacity: 0; */
+        }
+        #copy_img {
+
+        }
+        .savemapdes {
+            font-size: 30px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            position: absolute;
+            bottom: 120px;
+            color: #1E1E1E;
+        }
+
+        .head_bg {
+            width: 100%;
+            height: 210px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            background: linear-gradient(270deg, #00A4D9 0%, #0071CC 100%);
+        }
+        .headInner_box {
+            display: flex;
+            flex-direction: row;
+            padding: 20px 0px;
+            width: 90%;
+            justify-content: space-between;
+        }
+        .head_text {
+            display: flex;
+            flex-direction: column;
+        }
+        .head_title {
+            font-size: 12px;
+            font-family: Helvetica;
+            color: #FFFFFF;
+        }
+        .head_price {
+            font-size: 30px;
+            font-family: Helvetica-Bold, Helvetica;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+        .qrCode_logo {
+            width: 10px;
+            height: 12px;
+            margin-right: 10px;
+        }
+        .qrCode_p {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            color: #B7C2D2;
+            margin-top: 10px;
+        }
+
+        .popupBg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 99;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            /* -webkit-filter: blur(1px);
+            filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='1'); */
+        }
+        .popup {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            height: 230px;
+            z-index: 100;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px 0px;
+        }
+        .cancel {
+            width: 145px;
+            height: 40px;
+            border: none;
+            background: #FFFFFF;
+            box-shadow: 0px 4px 10px 0px rgba(188, 188, 188, 0.2);
+            border-radius: 10px;
+            border: 1px solid #DCDCDC;
+            font-size: 18px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #464646;
+            line-height: 25px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #464646;
+            line-height: 20px;
+            font-size: 18px;
+        }
+        .retry {
+            width: 145px;
+            height: 40px;
+            border: none;
+            background: #00B9F5;
+            box-shadow: 0px 4px 10px 0px rgba(12, 33, 193, 0.2);
+            border-radius: 10px;font-size: 18px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #FFFFFF;
+            line-height: 25px;
+            font-size: 18px;
+        }
+        .card {
+            box-sizing: border-box;
+        }
+        .pay_list img {
+            width: 50px;
+        }
+        button {
+            outline: none;
+        }
+        .flex_row_around {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+        .flex_column_cc {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flex_row {
+            display: flex;
+            flex-direction: row;
+        }
+        .flex_column {
+            display: flex;
+            flex-direction: column;
+        }
+        .justify_content_center {
+            justify-content: center;
+        }
+        .align_items_center {
+            align-items: center;
+        }
+        #time {
+            color: #00B9F5;
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+        }
+        .canvas_payText {
+            font-size: 24px;
+            margin-top: 10px;
+            font-family: PingFangSC-Semibold, PingFang SC;
+            font-weight: 600;
+            color: #054384;
+        }
+        .havePaid {
+            width: 145px;
+            height: 40px;
+            background: #FFFFFF;
+            box-shadow: 0px 4px 10px 0px rgba(188, 188, 188, 0.2);
+            border-radius: 10px;
+            font-size: 18px;
+            border: 1px solid #DCDCDC;
+        }
+        .retryPayment {
+            width: 145px;
+            border: none;outline: none;
+            height: 40px;
+            color: #fff;
+            background: #00B9F5;
+            box-shadow: 0px 4px 10px 0px rgba(0, 185, 245, 0.2);
+            border-radius: 10px;
+        }
+        .notReceived {
+            color: #00B9F5;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 8px;
+            margin-bottom: 5px;
+        }
+        .completePayment {
+            color: #9A9A9A;
+            font-size: 12px;
+        }
+
+        .popupPayBg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            /* height: 340px; */
+            z-index: 98;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popupPayBg_t {
+            animation:myfirst 0.6s;
+            -webkit-animation:myfirst 0.6s;
+            animation-fill-mode: forwards;
+        }
+
+        @-webkit-keyframes myfirst /* Safari and Chrome */
+            {0%   {height: 10px}
+            100% {height:340px}
+        }
+
+        @media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+            html {
+                transform: rotate(-90deg);
+                transform-origin: left top;
+                width: 100vh;
+                overflow-x: hidden;
+                position: absolute;
+                top: 100%;
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class = "qrCode"></div>
+    <!-- -10000px -->
+    <div id = "downloadArea" class = "downloadArea" style = "position: absolute; z-index: 99999; top: -10000px;">
+        <div class = "savemap">
+            <div id = "copy_img"></div>
+            <p class = "canvas_payText">Pay <span id = "show_priceqr"></span></p>
+            <p class = "savemapdes" id = "systemTime"></p>
+        </div>
+    </div>
+
+    <div id = "__nuxt">
+        <div class = "head_bg">
+            <div class = "headInner_box">
+                <div class = "head_text">
+                    <p class = "head_title">Recharge Amount</p>
+                    <span>
+                        <!--<span style = "font-size: 24px;font-family: Helvetica;color: #FFFFFF;">₹</span>-->
+                        <span class = "head_price" id = "show_price"></span>
+                    </span>
+                </div>
+                <img style = "width: 58px;height: 55px;" src = "paystatic/images/shop.png" />
+            </div>
+        </div>
+        <div class = "paymentList">
+            <el-collapse
+                style = "background: #F8F8F8;width: 100%;padding: 0px 20px;border-radius: 16px"
+                v-model = "activeNames"
+                accordion
+                @change = "handleChange"
+            >
+                <el-collapse-item
+                    v-for = "(item, index) in upiSortConfig"
+                    :name = "index"
+                >
+                    <template slot = "title">
+                        <i class = "payConfig_head_icon qr_icon"></i>{{item.name}}
+                    </template>
+
+                    <template v-if = "item.name == 'QR Scan'">
+                        <div class = "qrCode_config">
+                            <div class = "qrCode_box">
+                                <div id = "qrCode"></div>
+                                <p style = "margin-top: 10px; width: 100%">1.Take a screenshot of the QR code</p>
+                                <p style = "margin-top: 10px; width: 100%">2.Click "Pay" ,select a UPI APP and make the payment</p>
+                            </div>
+                            <button class = "payBtn album" onclick = "OpenPayApp()">Pay</button>
+                            <p class = "qrCode_p" style = "font-size: 10px;">
+                                <img src = "paystatic/images/shield.png" class = "qrCode_logo" />
+                                100% secure payment powered by UPIBank
+                            </p>
+                        </div>
+                    </template>
+
+                    <template v-if = "item.name == 'UPI'">
+                        <ul>
+                            <li
+                                class = "payOptions"
+                                v-for = "(v,i) in upiPayConfig"
+                                @click = "ChosePayOption($event,i)"
+                            >
+                                <div class = "upiPayLogoBox">
+                                    <span class = "payOptionsImg"><img :src = "v.iconUrl" /></span>
+                                    <span>{{v.name}}</span>
+                                </div>
+                                <span>
+                                    <div class = "paymentRadio"></div>
+                                </span>
+                            </li>
+                            <li><button class = "payBtn" onclick = "OpenLink(this)">Pay</button></li>
+                            <li style = "font-size: 10px; display: flex; flex-direction: row; justify-content: center; align-items: center; color: #B7C2D2;margin-top: 10px;">
+                                <img src = "paystatic/images/shield.png" style = "width: 10px; height: 12px; margin-right: 10px;" />
+                                100% secure payment powered by UPIBank
+                            </li>
+                        </ul>
+                    </template>
+
+                    <template v-if = "item.name == 'Manual transfer'">
+
+                    </template>
+                </el-collapse-item>
+
+
+            </el-collapse>
+
+        </div>
+
+
+
+
+        <!-- 支付App -->
+        <div class = "popupPayBg" style = "display: none;">
+            <div class = "popupPayBg_t" style = "height: 340px; width: 100%; background: #F8F8F8; position: absolute; bottom: 0px;
+                display: flex; flex-direction: column; align-items: center;">
+
+                <ul style = "width: 90%; margin-top: 40px;">
+                    <li
+                        class = "payOptions"
+                        v-for = "(v,i) in upiPayConfig"
+                        @click = "ChosePayOption($event,i)"
+                    >
+                        <div class = "upiPayLogoBox">
+                            <span class = "payOptionsImg"><img :src = "v.iconUrl" /></span>
+                            <span>{{v.name}}</span>
+                        </div>
+                        <span>
+                            <div class = "paymentRadio"></div>
+                        </span>
+                    </li>
+
+                    <li><button class = "payBtn" onclick = "GoApp()">Scan to pay ₹<span id = "show_price1"></span></button></li>
+                    <!-- <li><button class = "payBtn" onclick = "OpenLink()">Scan to pay ₹<span id = "show_price1"></span></button></li> -->
+                    <li style = "display: flex; flex-direction: row; justify-content: center; font-size: 13px; align-items: center; color: #B7C2D2;margin-top: 10px;">
+                        <img src = "paystatic/images/shield.png" style = "width: 10px; height: 12px; margin-right: 10px;" />
+                        100% secure payment powered by UPIBank
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class = "popupBg" style = "display: none;">
+        <div class = "popup loading">
+            <div class = "flex_column justify-content_center align_items_center" style = "height: auto;">
+                <img style = "width: 120px;" src = "paystatic/images/loading2.gif" />
+                <p id = "time">00:30</p>
+                <p style = "color: #9A9A9A;font-size: 12px;">Your payment is being processed.</p>
+            </div>
+
+            <div style = "width: 90%;" class = "flex_row_around">
+                <button class = "cancel" onclick = "CloseDialog()">Cancel</button>
+            </div>
+        </div>
+
+        <div class = "popup timeout">
+            <div class = "flex_column justify-content_center align_items_center" style = "height: auto;">
+                <img style = "width: 65px;" src = "paystatic/images/timeout.png" />
+                <p class = "notReceived">Payment not received</p>
+                <p class = "completePayment">You can retry if you don,t complete the payment</p>
+            </div>
+            <div class = "flex_row justify_content_center" style = "width: 90%; justify-content: space-around;">
+                <button class = "havePaid" onclick = "linkUtr()">I have paid</button>
+                <button class = "retryPayment" onclick = "OpenLink(this)">Retry Payment</button>
+            </div>
+        </div>
+    </div>
+<script src = "paystatic/js/jquery.js"></script>
+<script type="text/javascript" src="paystatic/js/jquery.qrcode.min.js"></script>
+<script src = "paystatic/js/config.js"></script>
+<script src = "paystatic/js/html2canvas.js"></script>
+<script src = "paystatic/js/vue.js"></script>
+<script src = "paystatic/js/element.js"></script>
+<script src = "paystatic/js/md5.js"></script>
+
+<script>
+
+    var payNumber = -1;
+    var Vue = new Vue({
+        el: '#__nuxt',
+        data: function() {
+            return {
+                activeIndex: 1,
+                dynamicValidateForm: {
+                    email: "",
+                    proposal: ""
+                },
+                dialogFormVisible: false,
+                activeNames: [0],
+                upiPayConfig: [
+                    {
+                        name: "PayTM",
+                        iconUrl: "paystatic/images/01_0000_paytm.png",
+                    },{
+                        name: "PhonePe",
+                        iconUrl: "paystatic/images/01_0003_phonepe.png",
+                    },{
+                        name: "Google Pay",
+                        iconUrl: "paystatic/images/01_0001_gpay.png",
+                    },{
+                        name: "Other Apps",
+                        iconUrl: "paystatic/images/01_0002_apps.png",
+                    }
+                ],
+                upiSortConfig: []
+            }
+        },
+        mounted() {
+            $($(".payOptions")[0]).click();
+        },
+        created() {
+            this.InitMenu();
+        },
+        methods: {
+            InitMenu() {
+                var sort = [
+                    {
+                        sortMap: 'X',
+                        iconClass: "upi_icon",
+                        name: "UPI"
+                    }, {
+                        sortMap: 'Y',
+                        iconClass: "qr_icon",
+                        name: "QR Scan"
+                    }, {
+                        sortMap: 'Z',
+                        iconClass: "manal_icon",
+                        name: "Manual transfer"
+                    }
+                ];
+                var order = this.getUrlParam('show');
+                if(order == null || !order) {
+                    order = 'X';
+                    // order = 'XYZ';
+                }
+                var result = [];
+                order.split("").forEach(function(val) {
+                    sort.forEach(function(item, index) {
+                        if(val.toLocaleLowerCase() == item.sortMap.toLocaleLowerCase()) {
+                            result.push(item);
+                        }
+                    })
+                })
+                this.upiSortConfig = result;
+            },
+            getUrlParam(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) {
+                    return unescape(r[2]);
+                } else {
+                    if (window.parent && window.parent.location) {
+                        r = window.parent.location.search.substr(1).match(reg);
+                    }
+                    if (r != null) return unescape(r[2]);
+                    return null;
+                }
+            },
+            handleChange(val) {
+                this.activeIndex = val;
+            },
+            ChosePayOption(e,n) {
+                $(".payOptions").removeClass("active");
+                e.path.forEach(val => {
+                    if(val.className == 'payOptions') {
+                        $(val).addClass("active");
+                    }
+                })
+
+                // $(e.target).addClass("active");
+                payNumber = n;
+            },
+        }
+    })
+
+    var open_App = null;
+    var price = null;
+
+    var show_price = document.querySelector("#show_price");
+    var show_price1 = document.querySelector("#show_price1");
+    var show_priceqr = document.querySelector("#show_priceqr");
+    var orderId = getUrlParam("orderId");
+    var new_orderId;
+    var linkUrl = GetInfo(true);
+    var needOpenUrl = false;
+
+
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        } else {
+            if (window.parent && window.parent.location) {
+                r = window.parent.location.search.substr(1).match(reg);
+            }
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+    }
+
+
+
+    $(".timeout").hide();
+    var timer;
+    function Countdown(countTime){
+        clearTimeout(timer);
+        if(countTime <= 0) {
+            $(".popupBg").show();
+            $(".loading").hide();
+            $(".timeout").show();
+            bookAndListenZFZ(new_orderId,linkUrl);
+            return;
+        };
+
+        $("#time").text("00:" + (countTime < 10?"0" + countTime:countTime));
+        --countTime;
+        timer = setTimeout(function(){
+            $("#time").text("00:" + (countTime < 10?"0" + countTime:countTime));
+            Countdown(countTime);
+        },1000)
+    }
+
+    function linkUtr(){
+        setTimeout(function(){
+            window.location.href = "success.html";
+        },500)
+    }
+
+    function OpenLink(t){
+        $("#time").hide();
+        switch(payNumber) {
+            case -1:
+                open_App = "upi"
+                break;
+            case 0:
+                open_App = "paytmmp"
+                break;
+            case 1:
+                open_App = "phonepe"
+                break;
+            case 2:
+                open_App = "gpay"
+                break;
+            case 3:
+                open_App = "upi"
+                break;
+        }
+        needOpenUrl = true;
+        $(".loading").show();
+        $(".timeout").hide();
+        $("#time").hide();
+        var linkUrl = GetInfo(false);
+        openApp(linkUrl,goConfirmAddr);
+        $(".popupBg").show();
+        wait();
+        // Auth(randowTime,new_orderId,linkUrl);
+    }
+
+    var timeInterval = null;
+    function wait() {
+        var waitTime = 29;
+
+        if(clearInterval != null){
+            clearInterval(timeInterval);
+            timeInterval = null;
+        }
+
+        if(timeInterval == null){
+            setTimeout(function() {
+                timeInterval = setInterval(function() {
+                    if (waitTime >= 0) {
+                        if (waitTime%5 == 0) {
+                            GetInfo(false);
+                        }
+                        waitTime--;
+                    } else {
+                        clearInterval(timeInterval);
+                        timeInterval = null;
+                    }
+                }, 1000);
+            }, 1200);
+        }
+    }
+
+  // function GoApp() {
+  //       $("#time").hide();
+  //       switch(payNumber) {
+  //           case -1:
+  //               open_App = "upi://"
+  //               break;
+  //           case 0:
+  //               open_App = "paytmmp://"
+  //               break;
+  //           case 1:
+  //               open_App = "phonepe://"
+  //               break;
+  //           case 2:
+  //               open_App = "gpay://upi/"
+  //               break;
+  //           case 3:
+  //               open_App = "upi://"
+  //               break;
+  //       }
+  //       needOpenUrl = true;
+  //       $(".loading").show();
+  //       $(".timeout").hide();
+  //       $("#time").hide();
+  //       var linkUrl = GetInfo(open_App);
+  //       // linkUrl = open_App+= linkUrl;
+  //       Auth(randowTime,new_orderId,linkUrl);
+  //   }
+
+    function GetInfo(first){
+
+        var url = "http://192.168.0.64:18001/merchant";
+        var upi_url = "";
+        $.ajax({
+            url: url + '/tradeplatform/payChannel/handlePaymentUpiOrder?platformTradeNo=' + getUrlParam("platformTradeNo"),
+            async: false,
+            type: "GET",
+            success: function(data){
+                if (data.code == 0) {
+                    if (first) {
+                        show_price.innerHTML = data.amount;
+                        show_price1.innerHTML = data.amount;
+                        show_priceqr.innerHTML = data.amount;
+                        price = data.amount;
+                    }
+                    if (data.status == '01') {
+                        upi_url = data.paylink;
+                    } else if (data.status == '02') {
+                        window.location.href = "success.html?failMsg=" + data.msg;
+
+                    } else {
+                        window.location.href = "fail.html?failMsg=" + data.msg;
+                    }
+                } else {
+                    window.location.href = "fail.html?failMsg=" + data.msg;
+                }
+            },
+            error:function() {
+                window.location.href = "fail.html?failMsg=" + "networkConnectionError";
+            }
+        });
+        CreateQrcode(upi_url);
+        return upi_url;
+    }
+
+    function CloseDialog() {
+        $(".popupBg").hide();
+        clearTimeout(timer);
+    }
+
+    document.addEventListener("visibilitychange", function() {
+        $("#time").show();
+        Countdown(30);
+    });
+
+    function openApp(link,callback) {
+        var u = navigator.userAgent;
+        var isIos = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        window.location.href = open_App + "://" + (isIos || open_App == "gpay" ? "upi/" : "") + link;
+    }
+
+    function goConfirmAddr(){
+
+    }
+
+    function CreateQrcode(url) {
+        // url = "upi://pay?cu=INR&pa=ahesh2021@icici&pn=payment001&tr=85i35904208e5ee&am=1.00&tn=85i35904208e5ee";
+        if( $("#qrCode canvas") ) {
+            $("#qrCode canvas").remove();
+        }
+        if( $("#qrCode1 canvas") ) {
+            $("#qrCode1 canvas").remove();
+        }
+        if( $(".qrCode canvas") ) {
+            $(".qrCode canvas").remove();
+        }
+        jQuery('#qrCode').qrcode({
+            cLevel: 'M',
+            typeNumber: -1,
+            correctLevel: 0,
+            text: url,
+            width: 240,
+            height: 240,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+        });
+
+        jQuery('#qrCode1').qrcode({
+            cLevel: 'M',
+            typeNumber: -1,
+            correctLevel: 0,
+            text: url,
+            width: 100,
+            height: 100,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+        });
+
+        jQuery('.qrCode').qrcode({
+            ecLevel: 'M',
+            typeNumber: -1,
+            correctLevel: 0,
+            text: url,
+            width: 140,
+            height: 140,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+        });
+    }
+
+    function convertCanvasToImage(canvas) {
+        $("#copy_img").empty();
+        var image = new Image();
+        image.src = canvas.toDataURL("image/png");
+        image.style.width = "200px";
+        image.style.height = "200px";
+        image.className = "canvas_image";
+        document.getElementById("copy_img").appendChild(image);
+        image.style.marginTop = "-100px";
+        GetTime();
+        GetImage();
+    }
+
+    function DownLoad() {
+        var canvas = document.createElement("canvas");
+        var canvasObj = $(".qrCode canvas")[0];
+        convertCanvasToImage(canvasObj);
+    }
+
+    function GoQrcodePay() {
+        setTimeout(function() {
+            window.location.href = "qrcodePay.html?orderId="+orderId+"&merchantId="+merchantId+"&qrCode_new="+linkUrl;
+            // window.location.href = "qrcodePay.html?orderId="+orderId+"&merchantId="+merchantId;
+        },500)
+    }
+
+    function GetImage() {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+
+        var c_width = $('.downloadArea').outerWidth();
+        var c_height = $('.downloadArea').outerHeight();
+
+        var ratio = 3;
+        canvas.width = c_width * ratio;
+        canvas.height = c_height * ratio;
+
+        canvas.style.width = c_width + "px";
+        canvas.style.height = c_height + "px";
+
+        var transTop = $(document).scrollTop() - $('.downloadArea').offset().top;
+
+        context.scale(ratio, ratio);
+        context.translate((c_width - $(window).width()) / 2, transTop)
+
+        var scale = 1;
+        html2canvas($(".savemap"), {
+            // dpi: window.devicePixelRatio * scale,
+            allowTaint: true,
+            useCORS: true,
+            scale: scale,
+            canvas: canvas,
+            width: c_width,
+            height: c_height,
+            onrendered: function (canvas) {
+                canvas.style.position = "absolute";
+                canvas.style.top = "0px";
+
+                document.body.appendChild(canvas);
+
+                var type = 'png';
+                var imgData = canvas.toDataURL(type);
+
+                var _fixType = function (type) {
+                    type = type.toLowerCase().replace(/jpg/i, 'jpeg');
+                    var r = type.match(/png|jpeg|bmp|gif/)[0];
+                    return 'image/' + r;
+                };
+                imgData = imgData.replace(_fixType(type), 'image/octet-stream');
+                var saveFile = function (data, filename) {
+                    var SuccessObj = {
+                        isLoad: false
+                    }
+                    var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+                    save_link.href = data;
+                    save_link.download = filename;
+                    var event = document.createEvent('MouseEvents');
+                    event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+                    for(var k in SuccessObj) {
+                        Object.defineProperty(SuccessObj,k,{
+                            get: function(value) {
+
+                            },
+                            set: function(value) {
+                                GoQrcodePay();
+                            }
+                        });
+                    }
+                    SuccessObj.isLoad = save_link.dispatchEvent(event);
+                    // GoQrcodePay();
+                };
+                var filename = 'PayQRcode'+ (new Date().getTime()) + '.' + type;
+                if (canvas.msToBlob) {
+                    var blob = canvas.msToBlob();
+                    window.navigator.msSaveBlob(blob, filename);
+                } else {
+                    saveFile(imgData, filename);
+                }
+
+                canvas.remove();
+            }
+        })
+    }
+
+    function GetTime() {
+        var date = new Date()
+        var time = dateFormat("mm-dd HH:MM", date)
+        $("#systemTime").text(time);
+    }
+
+    function dateFormat(fmt, date) {
+        let ret;
+        const opt = {
+            "Y+": date.getFullYear().toString(),
+            "m+": (date.getMonth() + 1).toString(),
+            "d+": date.getDate().toString(),
+            "H+": date.getHours().toString(),
+            "M+": date.getMinutes().toString(),
+            "S+": date.getSeconds().toString()
+        };
+        for (let k in opt) {
+            ret = new RegExp("(" + k + ")").exec(fmt);
+            if (ret) {
+                fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+            };
+        };
+        return fmt;
+    }
+
+    function OpenPayApp() {
+        $(".popupPayBg").show();
+    }
+
+    $(".popupPayBg").click(function(e) {
+        if(e.target.className == "popupPayBg") {
+            $(".popupPayBg").toggle();
+        }
+    })
+</script>
+</body>
+</html>
